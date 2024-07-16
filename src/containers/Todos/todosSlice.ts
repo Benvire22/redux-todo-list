@@ -54,6 +54,22 @@ export const deleteTask = createAsyncThunk<void, string, { state: RootState }>(
     }
 );
 
+export const editCompleteTask = createAsyncThunk<void, string, { state: RootState }>(
+    'todos/editCompleteTask',
+    async (id: string, thunkAPI) => {
+        const currentTask = thunkAPI.getState().todos.tasks.find(todo => todo.id === id);
+
+        if (currentTask) {
+            await axiosApi.put(`/todos/${id}.json`, {
+                title: currentTask.title,
+                isDone: !currentTask.isDone,
+            });
+        }
+
+    }
+);
+
+
 
 export const todosSlice = createSlice({
     name: "todos",
@@ -93,6 +109,18 @@ export const todosSlice = createSlice({
             state.isLoading = false;
         });
         builder.addCase(deleteTask.rejected, (state) => {
+            state.isLoading = false;
+            state.isError = true;
+        });
+
+        builder.addCase(editCompleteTask.pending, (state) => {
+            state.isLoading = true;
+            state.isError = false;
+        });
+        builder.addCase(editCompleteTask.fulfilled, (state) => {
+            state.isLoading = false;
+        });
+        builder.addCase(editCompleteTask.rejected, (state) => {
             state.isLoading = false;
             state.isError = true;
         });

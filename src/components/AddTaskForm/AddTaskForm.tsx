@@ -7,7 +7,7 @@ import {AppDispatch} from "../../app/store";
 
 const AddTaskForm = () => {
   const [formData, setFormData] = useState<string>('');
-  const dispatch = useDispatch<AppDispatch>();
+  const dispatch: AppDispatch = useDispatch();
 
   const changeFormData = (event: React.ChangeEvent<HTMLInputElement>) => {
     setFormData(event.target.value);
@@ -18,7 +18,6 @@ const AddTaskForm = () => {
     await dispatch(addTask(formData));
     await dispatch(fetchTasks());
 
-
     setFormData('');
   };
 
@@ -28,7 +27,7 @@ const AddTaskForm = () => {
         <input
             className="field"
             type="text"
-            placeholder="Add new Task"
+            placeholder="Add new TaskItem"
             value={formData}
             onChange={changeFormData}
             required
