@@ -9,6 +9,7 @@ import Spinner from '../../components/Spinner/Spinner';
 const Todos = () => {
   const tasksData = useSelector((state: RootState) => state.todos.tasks);
   const isLoading = useSelector((state: RootState) => state.todos.isLoading);
+  const isError = useSelector((state: RootState) => state.todos.isError);
   const dispatch: AppDispatch = useDispatch();
 
   useEffect(() => {
@@ -29,13 +30,18 @@ const Todos = () => {
     <>
       {isLoading && <Spinner/>}
       <AddTaskForm/>
-      <TaskItems
-        tasks={tasksData}
-        onDelete={onDelete}
-        getCompleted={getCompleted}
-      />
+      {isError ? (
+        <h2 className="text-danger fs-1 my-5">Sorry, unexpected error was occurred!</h2>
+      ) : (
+        <TaskItems
+          tasks={tasksData}
+          onDelete={onDelete}
+          getCompleted={getCompleted}
+        />
+      )}
     </>
   );
+
 };
 
 export default Todos;
