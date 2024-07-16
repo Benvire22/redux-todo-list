@@ -1,27 +1,24 @@
 import React, {useState} from 'react';
 import './AddTaskForm.css';
-import {TaskApi} from "../../types";
+import {addTask, fetchTasks} from "../../containers/Todos/todosSlice";
+import {useDispatch} from "react-redux";
+import {AppDispatch} from "../../app/store";
 
-interface Props {
-  addNewTask: (event: React.FormEvent<HTMLFormElement>, newPost: string) => void;
-}
 
-const AddTaskForm: React.FC<Props> = ({addNewTask}) => {
+const AddTaskForm = () => {
   const [formData, setFormData] = useState<string>('');
+  const dispatch = useDispatch<AppDispatch>();
 
   const changeFormData = (event: React.ChangeEvent<HTMLInputElement>) => {
     setFormData(event.target.value);
   };
 
-  const sendTask = (event: React.FormEvent<HTMLFormElement>) => {
+  const sendTask = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
+    await dispatch(addTask(formData));
+    await dispatch(fetchTasks());
 
-    const newTask: TaskApi = {
-      title: formData,
-      isDone: false,
-    };
 
-    addNewTask(event, formData);
     setFormData('');
   };
 

@@ -1,7 +1,27 @@
+import {useDispatch, useSelector} from "react-redux";
+import {AppDispatch, RootState} from "../../app/store";
+import AddTaskForm from "../../components/AddTaskForm/AddTaskForm";
+import {useEffect} from "react";
+import {fetchTasks} from "./todosSlice";
+
 const Todos = () => {
+    const tasksData = useSelector((state: RootState) => state.todos.tasks);
+    const dispatch: AppDispatch = useDispatch();
+
+    console.log(tasksData);
+
+    useEffect(() => {
+        dispatch(fetchTasks());
+    }, [dispatch]);
+
     return (
         <div>
-
+            <AddTaskForm />
+            {tasksData.map((todo) => (
+                <div key={todo.id}>
+                    <h3>{todo.title}</h3>
+                </div>
+            ))}
         </div>
     );
 };
