@@ -1,10 +1,10 @@
 import {createAsyncThunk, createSlice} from '@reduxjs/toolkit';
-import {Task, TaskApi} from '../../types';
+import {toast} from 'react-toastify';
 import axiosApi from '../../axiosApi';
 import {RootState} from '../../app/store';
-import {toast} from 'react-toastify';
+import {Task, TaskApi} from '../../types';
 
-interface TaskApiResponse {
+interface TaskApiData {
   [key: string]: TaskApi;
 }
 
@@ -27,6 +27,7 @@ export const addTask = createAsyncThunk<void, string, { state: RootState }>(
       title,
       isDone: false,
     };
+
     await axiosApi.post('/todos.json', newTask);
   }
 );
@@ -34,7 +35,7 @@ export const addTask = createAsyncThunk<void, string, { state: RootState }>(
 export const fetchTasks = createAsyncThunk<Task[], void, { state: RootState }>(
   'todos/fetchTasks',
   async () => {
-    const {data: tasksData} = await axiosApi.get<TaskApiResponse>('/todos.json');
+    const {data: tasksData} = await axiosApi.get<TaskApiData | null>('/todos.json');
 
     if (tasksData !== null) {
       return Object.keys(tasksData).map((key: string) => ({
@@ -42,6 +43,7 @@ export const fetchTasks = createAsyncThunk<Task[], void, { state: RootState }>(
           id: key,
         }
       ));
+
     } else {
       return [];
     }
@@ -70,7 +72,6 @@ export const editCompleteTask = createAsyncThunk<void, string, { state: RootStat
   }
 );
 
-
 export const todosSlice = createSlice({
   name: 'todos',
   initialState,
@@ -82,13 +83,12 @@ export const todosSlice = createSlice({
     });
     builder.addCase(addTask.fulfilled, (state) => {
       state.isLoading = false;
-      toast.success('Task was added!')
+      toast.success('Task was added!');
     });
     builder.addCase(addTask.rejected, (state) => {
       state.isLoading = false;
       state.isError = true;
-      toast.error('Error: cannot load task!')
-
+      toast.error('Error, cannot add new task!');
     });
 
     builder.addCase(fetchTasks.pending, (state) => {
@@ -102,7 +102,7 @@ export const todosSlice = createSlice({
     builder.addCase(fetchTasks.rejected, (state) => {
       state.isLoading = false;
       state.isError = true;
-      toast.error('Network error, tasks is not loading!')
+      toast.error('Error, tasks is not loading!');
     });
 
     builder.addCase(deleteTask.pending, (state) => {
@@ -111,12 +111,12 @@ export const todosSlice = createSlice({
     });
     builder.addCase(deleteTask.fulfilled, (state) => {
       state.isLoading = false;
-      toast.success('Task was deleted!')
+      toast.success('Task was deleted!');
     });
     builder.addCase(deleteTask.rejected, (state) => {
       state.isLoading = false;
       state.isError = true;
-      toast.error('Network error, task is not deleted!')
+      toast.error('Error, task is not deleted!');
     });
 
     builder.addCase(editCompleteTask.pending, (state) => {
@@ -125,12 +125,12 @@ export const todosSlice = createSlice({
     });
     builder.addCase(editCompleteTask.fulfilled, (state) => {
       state.isLoading = false;
-      toast.success('Edit completed was fulfilled!')
+      toast.success('Edit completed was fulfilled!');
     });
     builder.addCase(editCompleteTask.rejected, (state) => {
       state.isLoading = false;
       state.isError = true;
-      toast.error('Error, edit completed was rejected!')
+      toast.error('Error, edit completed was failure!');
     });
   }
 });
