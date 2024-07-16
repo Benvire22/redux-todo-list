@@ -25,7 +25,7 @@ export const addTask = createAsyncThunk<void, string, { state: RootState }>(
         const newTask: TaskApi = {
             title,
             isDone: false,
-        }
+        };
         await axiosApi.post('/todos.json', newTask);
     }
 );
@@ -34,13 +34,26 @@ export const fetchTasks = createAsyncThunk<Task[], void, { state: RootState }>(
     'todos/fetchTasks',
     async () => {
         const {data: tasksData} = await axiosApi.get<TaskApiResponse>('/todos.json');
-        return  Object.keys(tasksData).map((key: string) => ({
-                ...tasksData[key],
-                id: key,
-            }
-        ));
+
+        if (tasksData !== null) {
+            return  Object.keys(tasksData).map((key: string) => ({
+                    ...tasksData[key],
+                    id: key,
+                }
+            ));
+        } else {
+            return [];
+        }
     }
 );
+
+export const deleteTask = createAsyncThunk<void, string, { state: RootState }>(
+    'todos/deleteTask',
+    async (id: string) => {
+        await axiosApi.delete(`/todos/${id}.json`);
+    }
+);
+
 
 export const todosSlice = createSlice({
     name: "todos",
@@ -71,8 +84,19 @@ export const todosSlice = createSlice({
             state.isLoading = false;
             state.isError = true;
         });
-    }
 
+        builder.addCase(deleteTask.pending, (state) => {
+            state.isLoading = true;
+            state.isError = false;
+        });
+        builder.addCase(deleteTask.fulfilled, (state) => {
+            state.isLoading = false;
+        });
+        builder.addCase(deleteTask.rejected, (state) => {
+            state.isLoading = false;
+            state.isError = true;
+        });
+    }
 });
 
 export const todosReducer = todosSlice.reducer;
