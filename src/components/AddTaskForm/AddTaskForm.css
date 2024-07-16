@@ -1,0 +1,15 @@
+.form-row {
+  padding: 15px;
+  display: flex;
+  justify-content: center;
+  gap: 20px;
+}
+
+.field {
+  width: 74%;
+  padding: 10px;
+  font-size: 24px;
+  border-radius: 10px;
+  outline: none;
+  border: none;
+}
