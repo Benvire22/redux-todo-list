@@ -10,17 +10,24 @@ interface Props {
 
 const TaskItems: React.FC<Props> = ({tasks, onDelete, getCompleted}) => {
     return (
-        <div className="tasks">
-            {tasks.map((todo) => (
-                <TaskItem
-                    key={todo.id}
-                    title={todo.title}
-                    onRemoveTask={() => onDelete(todo.id)}
-                    isDone={todo.isDone}
-                    onChangeComplete={() => getCompleted(todo.id)}
-                />
-            ))}
+        <>
+            <h1>To Do list</h1>
+            <div className="tasks">
+            {tasks.length > 0 ? (
+                tasks.map((todo) => (
+                    <TaskItem
+                        key={todo.id}
+                        title={todo.title}
+                        onRemoveTask={() => onDelete(todo.id)}
+                        isDone={todo.isDone}
+                        onChangeComplete={() => getCompleted(todo.id)}
+                    />
+                ))
+            ) : (
+                <h2>Empty..</h2>
+            )}
         </div>
+        </>
     );
 };
 

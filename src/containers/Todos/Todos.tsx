@@ -4,9 +4,11 @@ import AddTaskForm from "../../components/AddTaskForm/AddTaskForm";
 import {useEffect} from "react";
 import {deleteTask, editCompleteTask, fetchTasks} from "./todosSlice";
 import TaskItems from "../../components/TaskItems/TaskItems";
+import Spinner from "../../components/Spinner/Spinner";
 
 const Todos = () => {
     const tasksData = useSelector((state: RootState) => state.todos.tasks);
+    const isLoading = useSelector((state:RootState) => state.todos.isLoading);
     const dispatch: AppDispatch = useDispatch();
 
     useEffect(() => {
@@ -24,14 +26,15 @@ const Todos = () => {
     };
 
     return (
-        <div>
+        <>
+            {isLoading && <Spinner />}
             <AddTaskForm />
             <TaskItems
                 tasks={tasksData}
                 onDelete={onDelete}
                 getCompleted={getCompleted}
             />
-        </div>
+        </>
     );
 };
 

@@ -27,7 +27,7 @@ const AddTaskForm = () => {
         <input
             className="field"
             type="text"
-            placeholder="Add new TaskItem"
+            placeholder="Add new Task"
             value={formData}
             onChange={changeFormData}
             required
